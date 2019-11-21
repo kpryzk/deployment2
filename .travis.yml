@@ -1,0 +1,28 @@
+language: node_js
+node_js:
+  - node # uses most recent stable node version
+services:
+  - postgresql # starts up postgres
+addons:
+  postgresql: '9.6' # highest available postgres version on Travis
+dist: trusty # uses trusty environment
+sudo: false # when on trusty, uses Docker containers for speed
+notifications:
+  email:
+    on_success: change # default: change (only when going from broken to fixed)
+    on_failure: always # default: always (which is annoying, as it should be)
+install:
+  - npm ci # faster, goes only from package-lock
+before_script:
+  - psql -c 'create database "deployment-exercise-test";' -U postgres # remember to change this name if you change it elsewhere (e.g. package.json)
+before_deploy: # omit node_modules, since we set skip_cleanup below
+  - rm -rf node_modules
+deploy: # see README for details on these keys
+  # prevents travis from deleting the build
+  skip_cleanup: true
+  provider: heroku
+  # app should be your heroku app name; see README
+  app: pure-oasis-57297
+  # the secure key indicates an encrypted value; see README
+  api_key:
+    secure: ie7u557j3DLgPmfzcrP5Qua+ggyqWR8kOwLhGlFd1cmTI0xDgL0/jsejGwzp+VGV5xTOO5rJX9zjlCMgPe1Hi/2pmXaMt7toheEC7kUM1NZu8ziSHcDgMT/N0DDoBZOcjZ6KjqeYm34eDqdzBi3BiEwNAbg0zys2bRKYZvoNgOsaK6S3XstyLpwaaD84t2BNPWhyEwTtJc8iphbDqb9RXpC6PRv7jJmDqcQJeOcxvEJ7pZhwVoL+S+IOMJDJ53kSqGzmpRoZjVrwkpArCpy/bVRqTNNgotRKTo8iCp9ArwAmN83yIcX1l32+oyjiwv2Zeba0c/cFOeI/blaPLftO6ioyr0yjwMrLbmDy0ghbHf4biAoRw7KpLlfmmmWfqhasRZHPuNUzHQtQnD9QuMsYKwTeXx3fU0Tx6yribCHBMo9QXMVYdFSuHrUrt6Bg2mriIr7sVd/sIIElTGH+O1pTD7z+PvqYbdd47fJcyKkn8PyKYLDQVPxwMue/cYBiLcXLSIO/Ujoamu8Wd3K06QkTgXxWC0zILi2Xy4Pj9Mllo0rtIVxV8EVt9hAgK/fneL0ge5B8Yyl195ySpD+iQbkynzqJXzLVbD/Iv3QsBQGhGvwEEWgNaL+zG6zMSulNrVkyyepVOK1rL549uk8wju30L7XdflceGwgwMcJniG6O+Fs=
