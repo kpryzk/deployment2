@@ -17,7 +17,9 @@ class App extends React.Component {
   }
 
   render() {
-    return <UserList users={this.state.users} />
+    return (
+      <h1>Hello world</h1>
+    )
   }
 }
 
